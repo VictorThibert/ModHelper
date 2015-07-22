@@ -1,0 +1,526 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+
+    <script src="jquery-2.1.4.min.js"></script>
+    <script src="selectize.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="selectize.css" />
+
+
+    <meta charset="utf-8">
+
+    <title>mfia</title>
+
+
+  </head>
+
+  <body>
+
+    <!-- <div class="sandbox">
+      <label for="input-tags">Add roles:</label>
+      <input type="text" id="input-tags" class="demo-default" value="Doctor, Mafia, Mafia, Villager">
+    </div> -->
+    <script class="show">
+      //   $('#input-tags').selectize({
+      //     plugins: ['remove_button'],
+      //     delimiter: ',',
+      //     persist: false,
+      //     create: function(input) {
+      //         return {
+      //             value: input,
+      //             text: input
+      //         }
+      //     }
+      // });
+    </script>
+   
+    <script>
+
+    //TOWN CONDITIONS ADDED
+    //MAFIA CONDITIONS ADDED
+    //DOCTOR CONDITIONS ADDED
+    //DETECTVE CONDITIONS _____
+
+
+
+      var roles = [];
+      var players = [];
+      var initialPlayers = [];
+      var mafiaTally = [];
+      var townTally = [];
+
+      var roleDiv = document.createElement("div");
+      roleDiv.setAttribute("id", "roleDiv");
+      document.body.appendChild(roleDiv);
+
+      var namesDiv = document.createElement("div");
+      namesDiv.setAttribute("id", "namesDiv");
+      document.body.appendChild(namesDiv);
+
+      var assignmentDiv = document.createElement("div");
+      assignmentDiv.setAttribute("id", "assignmentDiv");
+      document.body.appendChild(assignmentDiv);
+
+      var actionLog = document.createElement("div");
+      actionLog.setAttribute("id", "actionLog");
+      document.body.appendChild(actionLog);
+
+      var addRolesText = document.createElement("p");
+      var node1 = document.createTextNode("Add roles.");
+      addRolesText.appendChild(node1);
+      roleDiv.appendChild(addRolesText)
+
+      var textField = document.createElement("INPUT");
+      textField.setAttribute("type", "text");
+      textField.setAttribute("value", "");
+      textField.setAttribute("onkeydown", "if (event.keyCode == 13) add()")
+      roleDiv.appendChild(textField)
+
+      var addButton = document.createElement("BUTTON");
+      addButton.setAttribute("name", "Add");
+      addButton.setAttribute("onclick", "add()");
+      addButton.innerHTML = "Add Role"
+      roleDiv.appendChild(addButton);
+
+      var table1  = document.createElement("TABLE");
+      table1.setAttribute("id","t");
+      roleDiv.appendChild(table1);
+
+      function deleteButton(){
+        var deleteButton = document.createElement("BUTTON")
+        deleteButton.setAttribute("onclick", "deleteRow()")
+        deleteButton.innerHTML = "Delete";
+        return deleteButton;
+      }
+
+      var goContainer = document.createElement("div");
+      goContainer.setAttribute("id", "goContainer")
+      roleDiv.appendChild(goContainer);
+      var goButton = document.createElement("BUTTON");
+      goButton.innerHTML = "Go";
+      goButton.setAttribute("onclick", "go()");
+      goContainer.appendChild(goButton);
+
+      function add(){
+        var table = document.getElementById("t");
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = textField.value;
+        roles.push(textField.value);
+        textField.value = "";
+        cell2.appendChild(deleteButton());
+      }
+
+      function deleteRow(){
+        var current = window.event.srcElement;
+        var i = current.parentNode.parentNode.rowIndex;
+        roles.splice(i, 1);
+        document.getElementById("t").deleteRow(i);
+      }
+
+
+
+      function go(){
+        var roleDivhide = document.getElementById("roleDiv");
+        roleDivhide.setAttribute("style", "display: none");
+
+        var addNamesText = document.createElement("p");
+        var node2 = document.createTextNode("Add names.");
+        addNamesText.appendChild(node2);
+        namesDiv.appendChild(addNamesText);
+
+        for (x in roles) {
+          var nameField = document.createElement("INPUT");
+          nameField.setAttribute("type", "text");
+          nameField.setAttribute("class", "names");
+          nameField.setAttribute("value", "");
+          namesDiv.appendChild(nameField);
+          var br = document.createElement("br");
+          namesDiv.appendChild(br);
+        }
+
+        var goContainer2 = document.createElement("div");
+        goContainer2.setAttribute("id", "goContainer2")
+        namesDiv.appendChild(goContainer2);
+        var goButton2 = document.createElement("BUTTON");
+        goButton2.innerHTML = "Go";
+        goButton2.setAttribute("onclick", "go2()");
+        goContainer2.appendChild(goButton2);
+      }
+
+      function go2(){
+        var nameBoxes = document.getElementsByClassName("names");
+        for(var i = 0; i < nameBoxes.length; i++){
+          players.push({name:nameBoxes[i].value, status:"alive", protectionStatus:"none", detectionStatus:"none"});
+        }
+
+        randomize()
+
+        var namesDivhide = document.getElementById("namesDiv");
+        namesDivhide.setAttribute("style", "display: none");
+
+        var addAssignmentText = document.createElement("p");
+        var node3 = document.createTextNode("Here is the assignment.");
+        addAssignmentText.appendChild(node3);
+        assignmentDiv.appendChild(addAssignmentText);
+
+        var assignmentTable  = document.createElement("TABLE");
+        assignmentTable.setAttribute("id","assignmentTable");
+        assignmentDiv.appendChild(assignmentTable);
+        var row = assignmentTable.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = "Player     ".bold();
+        cell2.innerHTML = "Role".bold();
+
+        for (x in players){
+          var row = assignmentTable.insertRow(-1);
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          cell1.innerHTML = players[x].name;
+          cell2.innerHTML = players[x].role;
+        }
+
+        var nextDayButton = document.createElement("BUTTON");
+        nextDayButton.innerHTML = "Day 1";
+        nextDayButton.setAttribute("id", "timeButton");
+        nextDayButton.setAttribute("onclick", "nextDay(1)");
+        assignmentDiv.appendChild(nextDayButton);
+      }
+
+      function randomize(){
+        var rolesTemp = roles
+        for (x in players) {
+          players[x].role = rolesTemp.splice(Math.floor(Math.random() * rolesTemp.length), 1)[0]
+        }
+        initialPlayers = players;
+      }
+
+      var dailyDiv;
+
+      function nextDay(day){
+
+        checkWinConditions();
+
+        dailyDiv = document.createElement("div");
+        dailyDiv.setAttribute("id", "day" + day + "div");
+        actionLog.appendChild(dailyDiv);
+
+        var addPrompt = document.createElement("p");
+        var promptNode = document.createTextNode("On day " + day + ", the town has decided to lynch: ");
+        addPrompt.appendChild(promptNode);
+        dailyDiv.appendChild(promptNode);
+
+        var selectLynch = document.createElement("SELECT");
+        selectLynch.setAttribute("id", "day" + day + "selectLynch");
+        dailyDiv.appendChild(selectLynch);
+
+        var noption = document.createElement("option");
+        noption.value = players.length;
+        noption.text = "Nobody";
+        selectLynch.appendChild(noption);
+
+        
+        for (x in players){
+          if(players[x].status == "alive"){
+            var option = document.createElement("option");
+            option.value = x;
+            option.text = players[x].name;
+            selectLynch.appendChild(option);
+          }
+        }
+
+        
+       
+
+
+        var nextDayButton = document.createElement("BUTTON");
+        nextDayButton.innerHTML = "Go to night " + (day);
+        nextDayButton.setAttribute("id", "timeButton");
+        nextDayButton.setAttribute("onclick", "lynchMotion(" + day + ")");
+        dailyDiv.appendChild(nextDayButton); 
+
+      }
+
+      function nextNight(night){
+
+        checkWinConditions();
+
+        //MAFIA
+        dailyDiv = document.createElement("div");
+        dailyDiv.setAttribute("id", "night" + night + "div");
+        actionLog.appendChild(dailyDiv);
+
+        var addPrompt = document.createElement("p");
+        var promptNode = document.createTextNode("On night " + night + ", the mafia have decided to kill: ");
+        addPrompt.appendChild(promptNode);
+        dailyDiv.appendChild(promptNode);
+
+        var selectKill = document.createElement("SELECT");
+        selectKill.setAttribute("id", "night" + night + "selectKill");
+        dailyDiv.appendChild(selectKill);
+
+        var noption = document.createElement("option");
+        noption.value = players.length;
+        noption.text = "Nobody";
+        selectKill.appendChild(noption);
+
+        for (x in players){
+          if(players[x].status == "alive"){
+            var option = document.createElement("option");
+            option.value = x;
+            option.text = players[x].name;
+            selectKill.appendChild(option);
+          }
+        }
+
+        //DOCTOR
+        for (x in players){
+          if (players[x].role == "Doctor" && players[x].status == "alive"){
+            var addPrompt = document.createElement("p");
+            var promptNode = document.createTextNode(" The doctor has chosen to protect: ");
+            addPrompt.appendChild(promptNode);
+            dailyDiv.appendChild(promptNode);
+
+            var selectProtect = document.createElement("SELECT");
+            selectProtect.setAttribute("id", "night" + night + "selectProtect");
+            dailyDiv.appendChild(selectProtect);
+
+            var noption = document.createElement("option");
+            noption.value = players.length;
+            noption.text = "Nobody";
+            selectProtect.appendChild(noption);
+
+            for (x in players){
+              if(players[x].status == "alive" && players[x].protectionStatus != "protected"){
+                var option = document.createElement("option");
+                option.value = x;
+                option.text = players[x].name;
+                selectProtect.appendChild(option);
+              }
+            }
+          }
+        } 
+
+        //DETECTIVE
+        for (x in players){
+          if (players[x].role == "Detective" && players[x].status == "alive"){
+            var addPrompt = document.createElement("p");
+            var promptNode = document.createTextNode(" The detective has chosen to detect: ");
+            addPrompt.appendChild(promptNode);
+            dailyDiv.appendChild(promptNode);
+
+            var selectDetect = document.createElement("SELECT");
+            selectDetect.setAttribute("id", "night" + night + "selectDetect");
+            dailyDiv.appendChild(selectDetect);
+
+            var noption = document.createElement("option");
+            noption.value = players.length;
+            noption.text = "Nobody";
+            selectDetect.appendChild(noption);
+
+            for (x in players){
+              if(players[x].status == "alive" && players[x].role != "Detective"){
+                var option = document.createElement("option");
+                option.value = x;
+                option.text = players[x].name;
+                selectDetect.appendChild(option);
+              }
+            }
+          }
+        }
+
+
+        var nextDayButton = document.createElement("BUTTON");
+        nextDayButton.innerHTML = "Go to day " + (night + 1);
+        nextDayButton.setAttribute("id", "timeButton");
+        nextDayButton.setAttribute("onclick", "nightMotion(" + night + ")");
+        dailyDiv.appendChild(nextDayButton); 
+
+      }
+
+      function c(){
+        console.log("SPEC"); 
+        console.log(players);
+      }
+
+      function lynchMotion(day){
+
+          var e = document.getElementById("day" + day + "selectLynch");
+          var lynchee = e.options[e.selectedIndex].text;
+
+          for (x in players){
+            if (lynchee == players[x].name){
+              players[x].status = "dead";
+            }
+          }
+
+        var previousButton = document.getElementById("timeButton");
+        previousButton.parentNode.removeChild(previousButton);
+
+        while(dailyDiv.firstChild){
+          dailyDiv.removeChild(dailyDiv.firstChild);
+        }
+        var addPrompt = document.createElement("p");
+        var promptNode = document.createTextNode("On day " + day + ", the town has decided to lynch: " + lynchee );
+        addPrompt.appendChild(promptNode);
+        actionLog.appendChild(promptNode);
+
+        nextNight(day);
+      }
+
+      function nightMotion(night){
+        if(isAlive("Doctor")){
+          protectMotion(night);
+        }
+        if(isAlive("Detective")){
+          detectMotion(night);
+        } 
+        killMotion(night);
+
+        
+      }
+
+      function killMotion(night){
+        var e = document.getElementById("night" + night + "selectKill");
+        var killed = e.options[e.selectedIndex].text;
+        var protectee;
+        var detectee;
+        var detectedRole; 
+
+        var doctorSave = true;
+        if (killed == "Nobody") {
+          doctorSave = false;
+        }
+
+        for (x in players){
+          if (killed == players[x].name && players[x].protectionStatus != "protected"){
+            players[x].status = "dead";
+            doctorSave = false;
+          } else if (killed == players[x].name && players[x].protectionStatus == "protected") {
+            protectee = players[x].name;
+          }
+        }
+
+        for (x in players){
+          if(players[x].detectionStatus == "detected"){
+            detectee = players[x].name;
+          }
+        }
+
+        var previousButton = document.getElementById("timeButton");
+        previousButton.parentNode.removeChild(previousButton);
+
+        while(dailyDiv.firstChild){
+          dailyDiv.removeChild(dailyDiv.firstChild);
+        }
+        var addPrompt = document.createElement("p");
+        var promptNode = document.createTextNode("On night " + night + ", the mafia has decided to kill: " + killed );
+        addPrompt.appendChild(promptNode);
+        actionLog.appendChild(promptNode);
+
+        if (doctorSave){
+          var addPrompt2 = document.createElement("p");
+          var promptNode2 = document.createTextNode(" but they were protected by the doctor.")
+          addPrompt2.appendChild(promptNode2);
+          actionLog.appendChild(promptNode2);
+        }
+
+        if(isAlive("Doctor")){
+          var addPrompt = document.createElement("p");
+          var promptNode = document.createTextNode(" The doctor has decided to protect: " + killed );
+          addPrompt.appendChild(promptNode);
+          actionLog.appendChild(promptNode);
+        }
+
+        if(isAlive("Detective")){
+
+          for (x in players){
+            if(players[x].detectionStatus == "detected"){
+              detectedRole = players[x].role;
+            }
+          }
+
+          var addPrompt = document.createElement("p");
+          var promptNode = document.createTextNode(" The detective has detected: " + detectee + " as " + detectedRole + "." );
+          addPrompt.appendChild(promptNode);
+          actionLog.appendChild(promptNode);
+        }
+
+        nextDay(night + 1);
+
+      }
+
+      function protectMotion(night){
+        var e = document.getElementById("night" + night + "selectProtect");
+        var protectee = e.options[e.selectedIndex].text;
+
+        for (x in players){
+          players[x].protectionStatus = "none";
+        }
+
+        for (x in players){
+          if (protectee == players[x].name){
+            players[x].protectionStatus = "protected";
+          }
+        }
+      }
+
+      function detectMotion(night){
+        var e = document.getElementById("night" + night + "selectDetect");
+        var detectee = e.options[e.selectedIndex].text;
+
+        for (x in players){
+          players[x].detectionStatus = "none";
+        }
+
+        for (x in players){
+          if (detectee == players[x].name){
+            players[x].detectionStatus = "detected";
+            return players[x].role;
+          }
+        }
+
+      }
+
+      function isAlive(role){
+        for (x in players) {
+          if (players[x].role == role && players[x].status == "alive"){
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function checkWinConditions(){
+        mafiaTally = [];
+        townTally = [];
+        for (x in players) {
+          if (players[x].status == "alive" && players[x].role == "Mafia"){
+            mafiaTally.push(players[x]);
+          } else if (players[x].status == "alive" /*&& players[x].role == "Villager"*/) {
+            townTally.push(players[x]);
+          }
+        }
+        if (mafiaTally.length >= townTally.length){
+          announceWin("mafia");
+        } else if (mafiaTally.length == 0) {
+          announceWin("town");
+        }
+        c();
+
+
+      }
+
+      function announceWin(winners){
+        window.alert("The " + winners + " win");
+      }
+
+    </script>
+
+    
+  </body>
+</html>
