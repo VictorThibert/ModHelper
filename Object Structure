@@ -7,13 +7,11 @@ A game set is composed of an array of Player Objects.
 
  - Property: name  
  - Description: Player unique name identifier
- - Type: string
 
 ----------
 
  - Property: lifeStatus
- - Description: Whether player is alive or dead
- - Type: string
+ -  Description: Whether player is alive or dead
 
 
 ----------
@@ -21,17 +19,14 @@ A game set is composed of an array of Player Objects.
 
  - Property: isBlocked
  - Description: If player is blocked, prevents role action.
- - Type: string
 
 
 ----------
 
 - Property: isProtected
 - Description: If player is protected, prevents kill.
-- Type: string
 
-Example:
-
+ Example
 *[ {name: "Fred", lifeStatus: "dead", isBlocked: "yes", isProtected: "no"}, {name: "John", lifeStatus:"alive", isBlocked: "no", isProtected: "no"} ]*
 
 
@@ -40,9 +35,8 @@ Example:
 
 - Property: role
 - Description: 2nd level object describing role. 
-- Type: Role Object
 
-**Role Object**
+	A role is an object composed of the following properties:
 
 	- Property: priority
 	- Description: Order in which night action is performed over others. The greater the number, the greater the priority.
