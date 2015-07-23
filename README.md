@@ -11,7 +11,7 @@ A game set is composed of an array of Player Objects.
 ----------
 
  - Property: lifeStatus
- -  Description: Whether player is alive or dead
+ - Description: Whether player is alive or dead
 
 
 ----------
