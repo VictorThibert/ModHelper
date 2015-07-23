@@ -26,7 +26,7 @@ A game set is composed of an array of Player Objects.
 - Property: isProtected
 - Description: If player is protected, prevents kill.
 
- Example
+Example
 *[ {name: "Fred", lifeStatus: "dead", isBlocked: "yes", isProtected: "no"}, {name: "John", lifeStatus:"alive", isBlocked: "no", isProtected: "no"} ]*
 
 
@@ -36,7 +36,7 @@ A game set is composed of an array of Player Objects.
 - Property: role
 - Description: 2nd level object describing role. 
 
-	A role is an object composed of the following properties:
+A role is an object composed of the following properties:
 
 	- Property: priority
 	- Description: Order in which night action is performed over others. The greater the number, the greater the priority.
