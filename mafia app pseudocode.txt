@@ -1,0 +1,91 @@
+front end:
+
+form
+ask for number of players
+hit "next" button
+
+generates form with rows equal to number of players
+names of players (text box entry)
+names of roles (drop down list - one per player)
+hit "next" button
+
+generates dialogue to give out roles **allow user to go back without losing the form entries (use cookies), also allow user to refresh page to regenerate the role distribution
+prompt user for day or night start
+hit "next" button
+
+**GAME STARTS**
+
+
+
+global variables:
+playersInGame (array of objects)
+rolesInGame (array of objects, sorted by night priority)
+nightstart (boolean)
+daycounter (int)
+nightcounter (int)
+gunsInPlay (boolean)
+
+if nightstart, firstNight(playersInGame, rolesInGame)
+else firstDay(playersInGame, rolesInGame)
+
+function dayStart(playersInGame, rolesInGame)
+	players = playersInGame
+	roles = rolesInGame
+	deaths = []
+	announcements = []
+	day(deaths, announcements, players, roles)
+
+function nightStart(playersInGame, rolesInGame)
+	players = playersInGame
+	roles = rolesInGame
+	night()
+
+function day(deaths[], announcements[], players, roles)
+	daycounter++
+
+	if deaths array not empty
+		read out deaths
+
+	if announcements array not empty
+		read out announcements
+
+	winners[] = winners(players, roles)
+	if winners is not empty, return gameover(winners)
+
+	day begins
+	show day timer
+
+	if gunsInPlay = true, have a form with two dropdown lists, one of players with guns, one of all alive players, so that the mod can declare when someone is shot, and submit the form, which will call the gunshot() function
+
+	in a separate form for the lynch, have one dropdown beside each each alive player's name containing every alive player's name. This way the mod can select for each player, which player they vote for. Upon being submitted it will call a function which determines who is lynched  (this is only necessary if we want to implement roles like diplomat and hated, and want to have a point scoring system that takes into consideration how people vote. it would also just be nice to have for game records) 
+
+
+	night()
+
+function player(name, role)
+	this.
+
+function winners(players, roles)
+	var winners = []
+	if players[roles.fool.wasLynched, winners.append("Fool")
+	if serialkiller.isAlive & numPlayersAlive <= 2, winners.append("Serial Killer")
+	if mafia >= town+cult, winners.append("Mafia")
+	if cult >= town+mafia, winners.append("Cult")
+	if mafia + cult + 3rdpartyroles = 0, winners.append("Town")
+	return winners
+
+function gunshot(shooter,target)
+	if player[shooter]
+
+function gameover(winners)
+	for winner in winners
+		print(winner + " wins")
+
+
+function night()
+	for role in roles
+		if role.hasNightAction
+			if role.
+			wake up role
+			if 
+			role.function();
