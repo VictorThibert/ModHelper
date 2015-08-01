@@ -55,4 +55,7 @@ Example:
 		}
 
 		var doctor = new role("Doctor", 10, function(target){for (x in players){if(players[x].name == target){}}})
+		
+		
+		use Skeleton.js
 
