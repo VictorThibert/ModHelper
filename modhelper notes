@@ -1,0 +1,25 @@
+modhelper notes
+----------------------
+
+
+Classes
+----------------------
+
+** Players **
+> represent real life indivudals who are playing (alice, bob, charlie)
+> have a state of alive/dead
+> have an alighment (evil, neutral, etc.)
+> have a status (protected)
+
+** Status **
+
+** Role **
+> represents a in-game role (e.g. villager, mafia, doctor)
+
+
+** Game State **
+> main control object for game
+> keep track of turn number
+> cycle day and night phase
+
+** History ** 
