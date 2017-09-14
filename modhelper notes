@@ -8,13 +8,16 @@ Classes
 ** Players **
 > represent real life indivudals who are playing (alice, bob, charlie)
 > have a state of alive/dead
-> have an alighment (evil, neutral, etc.)
+> have a true alighment (evil, neutral, etc.)
 > have a status (protected)
+> have a perceived_alignment (evil, neutral)
 
 ** Status **
 
 ** Role **
 > represents a in-game role (e.g. villager, mafia, doctor)
+
+> consider subclassing Role / Good / Bad / Neutral
 
 
 ** Game State **
@@ -23,3 +26,11 @@ Classes
 > cycle day and night phase
 
 ** History ** 
+
+
+??????????
+
+
+How to deal with multiple of the same role
+
+e.g. vigilante 1 and vigilante 2
