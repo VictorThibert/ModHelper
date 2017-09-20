@@ -16,6 +16,7 @@ Classes
 
 ** Role **
 > represents a in-game role (e.g. villager, mafia, doctor)
+> should operate through gamestate
 
 > consider subclassing Role / Good / Bad / Neutral
 

@@ -4,7 +4,7 @@
 
 # ---------------------------------------------------------------------------------------------
 
-import player 
+# import player 
 
 class Role:
 	def __init__(self, name, description, priority, alignment, action):
@@ -12,6 +12,7 @@ class Role:
 		self.description = description
 		self.priority = priority
 		self.alignment = alignment
+		self.perceived_alignment = alignment
 		self.action = action
 
 	def __str__(self):
@@ -34,10 +35,20 @@ class Good(Role):
 
 class Mafia(Evil):
 	def action(self, gamestate):
+		target = input("Who would you like to kill (name-temp)?")
+		gamestate.mafia_kill(target)
 		print("I am mafia")
 
 	def __init__(self):
 		super().__init__(name="mafia", description="Together, the mafia get to choose one kill per night.", priority=10, action=self.action) # arbitrary priority for now
+
+class Godfather(Evil):
+	def action(self, gamestate):
+		print("Godfather (name-temp)")
+
+	def __init__(self):
+		super.__init__(name="godfather", description="Part of the mafia, but appears as good", priority=0, action=self.action)
+		self.perceived_alignment = 0
 
 class Villager(Good):
 	def action(self, gamestate):
@@ -48,7 +59,7 @@ class Villager(Good):
 
 class Doctor(Good):
 	def action(self, gamestate):
-		target = input("Who would you like to protect?")
+		target = input("Who would you like to protect (name-temp)?")
 		gamestate.protect_player(target, 1)
 		print("Doctor has chosen to protect: ", target)
 
@@ -56,8 +67,11 @@ class Doctor(Good):
 		super().__init__(name="doctor", description="Chooses one person per night to protect. Cannot choose the same person twice in a row. ", priority=15, action=self.action)
 
 class Detective(Good):
-	def action(self):
-		print("I am detective")
+	def action(self, gamestate):
+		target = input("Who would you like to detect (name-temp)?")
+		perceived_alignment = gamestate.get_perceived_alignment(target)
+		print(target, "is of alignment:", perceived_alignment)
+
 
 	def __init__(self):
 		super().__init__(name="detective", description="Investigates a player at night to figure out their alignment.", priority=5, action=self.action)
